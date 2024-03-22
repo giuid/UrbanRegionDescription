@@ -12,6 +12,10 @@ To use the Urban Region Description project, follow these steps:
 
 1. Configure all parameters you want into the `config.json` file.
 2. Place your image dataset into the `data` folder.
+3. Run
+```
+python main.py
+```
 
 ## Example
 Here's an example of how to use this project:
