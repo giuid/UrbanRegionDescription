@@ -217,17 +217,17 @@ import pandas as pd
 
 do_captioning = False
 if do_captioning:
-    frankfurt_path = '/home/guidorocchietti/image_captioning/data/frankfurt/frankfurt.csv'
-    frankfurt = pd.read_csv('/home/guidorocchietti/image_captioning/data/frankfurt/frankfurt.csv', index_col=0)
+    frankfurt_path = '../data/frankfurt/frankfurt.csv'
+    frankfurt = pd.read_csv('../data/frankfurt/frankfurt.csv', index_col=0)
 
-    df_with_captions = execute_captioning(frankfurt, '/home/guidorocchietti/image_captioning/data/frankfurt/frankfurt_with_captions.html', photos_path='/home/guidorocchietti/image_captioning/data/frankfurt/photos')
-df_with_captions = pd.read_html('/home/guidorocchietti/image_captioning/data/frankfurt/frankfurt_with_captions.html', index_col=0)[0]
+    df_with_captions = execute_captioning(frankfurt, '../data/frankfurt/frankfurt_with_captions.html', photos_path='../data/frankfurt/photos')
+df_with_captions = pd.read_html('../data/frankfurt/frankfurt_with_captions.html', index_col=0)[0]
 cleaned_captions = clean_captions_new(df_with_captions)
 cleaned_captions = cleaned_captions.rename(columns={'id':'ID'})
-noisy_clusters = pd.read_csv('/home/guidorocchietti/image_captioning/data/frankfurt/clustered_frankfurt_noisy.csv')
+noisy_clusters = pd.read_csv('../data/frankfurt/clustered_frankfurt_noisy.csv')
 cleaned_captions.merge(noisy_clusters[['ID','cluster']], on='ID')
 
-#download_photos(frankfurt, '/home/guidorocchietti/image_captioning/data/frankfurt/photos/')
+#download_photos(frankfurt, '../data/frankfurt/photos/')
 #captions_df['caption'] = captions_df.caption.apply(lambda x: " . ".join(x))
 #captions_df.to_csv('concatenated_captions.csv', index =False)
 

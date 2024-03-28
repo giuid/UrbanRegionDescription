@@ -26,12 +26,12 @@ def clean_output(decoded : list,captions:list):
     return cleaned
 
 
-final_results_path = '/home/guidorocchietti/image_captioning/data/frankfurt/summaries/'
+final_results_path = '../data/frankfurt/summaries/'
 files = [x for x in  os.listdir(final_results_path)  if '.csv' in x ]
 
 #%%
 #results = {file.replace('.csv',''): pd.read_csv(os.path.join(final_results_path, file)) for file in files}
-concatenated_captions = pd.read_csv('/home/guidorocchietti/image_captioning/data/pisa/clusters/grouped_df_90.csv', index_col=0)
+concatenated_captions = pd.read_csv('../data/pisa/clusters/grouped_df_90.csv', index_col=0)
 for file in files:
     df =pd.read_csv(os.path.join(final_results_path, file))
     df['cleaned_output'] = clean_output(df['decoded'].tolist(),df['caption'].tolist())
@@ -41,7 +41,7 @@ for file in files:
         df.to_excel(os.path.join(final_results_path, file.replace('.csv','.xlsx')), index=False)
 #merged = df.merge(concatenated_captions, on='caption', how='outer')
 # %%
-frankfurt_noisy = pd.read_csv('/home/guidorocchietti/image_captioning/data/frankfurt/clustered_frankfurt_noisy.csv')
+frankfurt_noisy = pd.read_csv('../data/frankfurt/clustered_frankfurt_noisy.csv')
 # %%
 accorpated_clusters = {3: [7, 8],52: [56, 98], 17: [57],70: [71],6: [80],115: [116]}
 
@@ -53,7 +53,7 @@ frankfurt_new_clusters = frankfurt_noisy.copy()
 frankfurt_new_clusters.link = frankfurt_new_clusters.link.apply(lambda x: '<img src="'+x+'" width="600" />')
 frankfurt_new_clusters = frankfurt_new_clusters.sort_values(by='cluster', ascending=True)
 frankfurt_new_clusters = frankfurt_new_clusters.merge(df[['cluster', 'cleaned_output','prompt']], on='cluster', how='outer')
-frankfurt_new_clusters[frankfurt_new_clusters.cluster != -1].to_html('/home/guidorocchietti/image_captioning/data/frankfurt/frankfurt_new_clusters.html', escape=False)
+frankfurt_new_clusters[frankfurt_new_clusters.cluster != -1].to_html('../data/frankfurt/frankfurt_new_clusters.html', escape=False)
 
 # %%
 df.groupby('prompt').count()
@@ -62,13 +62,13 @@ import pandas as pd
 import re
 from bs4 import BeautifulSoup
 
-table_html = open('/home/guidorocchietti/image_captioning/data/pisa/pisa_clustered_df_with_caption.html').readlines()
+table_html = open('../data/pisa/pisa_clustered_df_with_caption.html').readlines()
 table_html = ''.join(table_html)
 # Delete all <div>, </div>, <a> and </a> tags
 soup = BeautifulSoup(table_html, 'lxml')
 images = images = soup.find_all('img')
 #%%
-final_clusters = pd.read_csv('/home/guidorocchietti/image_captioning/data/pisa/final_clusters_semantic.csv')
+final_clusters = pd.read_csv('../data/pisa/final_clusters_semantic.csv')
 
 links = []
 for ID in final_clusters.id:
@@ -78,5 +78,5 @@ for ID in final_clusters.id:
 #%%
 final_clusters['html'] = [str(x) for x in links]
 #%%
-final_clusters.to_html('/home/guidorocchietti/image_captioning/data/pisa/final_clusters.html', index=False, escape=False)
+final_clusters.to_html('../data/pisa/final_clusters.html', index=False, escape=False)
 # %%

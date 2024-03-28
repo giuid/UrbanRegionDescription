@@ -178,8 +178,8 @@ def evaluate_df(df, manual_df, name:str):#,type:str):
     #scores = scores.merge(score, on='cluster', how='inner')
     return score
 
-cluster_manual = pd.read_csv('/home/guidorocchietti/image_captioning/data/pisa/clusters/new_manual_captions.csv', sep =';')
-sumaries_path = '/home/guidorocchietti/image_captioning/data/pisa/summaries/'
+cluster_manual = pd.read_csv('../data/pisa/clusters/new_manual_captions.csv', sep =';')
+sumaries_path = '../data/pisa/summaries/'
 files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
 scores = {}
 for file in tqdm(files[:], desc='Evaluating files',position=0):
@@ -188,7 +188,7 @@ for file in tqdm(files[:], desc='Evaluating files',position=0):
     df['cleaned'] = clean_output(df.decoded.tolist(),df.caption.tolist())
     df['cleaned'] = df['cleaned'].apply(lambda x: ".".join(x.split('.')[:4]))
     evaluation = evaluate_df(df, cluster_manual, file)
-    evaluation.to_csv(f'/home/guidorocchietti/image_captioning/data/pisa/scores/four_sents_{file}', index = False)
+    evaluation.to_csv(f'../data/pisa/scores/four_sents_{file}', index = False)
     scores[file] = evaluation
     
 
@@ -197,10 +197,10 @@ for file in tqdm(files[:], desc='Evaluating files',position=0):
 
 #%%
 '''
-cluster_manual = pd.read_csv('/home/guidorocchietti/image_captioning/data/pisa/clusters/clusters_manual.tsv', sep='\t')
+cluster_manual = pd.read_csv('../data/pisa/clusters/clusters_manual.tsv', sep='\t')
 do_scores = True
 if do_scores:
-    sumaries_path = '/home/guidorocchietti/image_captioning/data/pisa/summaries/'
+    sumaries_path = '../data/pisa/summaries/'
     files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
     summaries = {}
     for file in files:
@@ -220,7 +220,7 @@ if do_scores:
         else:
             scores[name] = scores[name].merge(score, on='cluster', how='inner')
 else:
-    sumaries_path = '/home/guidorocchietti/image_captioning/data/pisa/scores'
+    sumaries_path = '../data/pisa/scores'
     files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
     summaries = {}
     for file in files:
@@ -239,9 +239,9 @@ else:
         else:
             scores[name] = scores[name].merge(data, on='cluster', how='inner')
 for key in scores:
-    scores[key].to_csv(f'/home/guidorocchietti/image_captioning/data/pisa/scores/{key}_scores.csv', index = False)
+    scores[key].to_csv(f'../data/pisa/scores/{key}_scores.csv', index = False)
 #%%
-save_path = '/home/guidorocchietti/image_captioning/data/pisa/plots'
+save_path = '../data/pisa/plots'
 evaluations = ['rouge1','rougeL','bert']
 metrics = ['precision', 'recall', 'fmeasure']
 

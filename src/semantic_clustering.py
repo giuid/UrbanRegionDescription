@@ -1,6 +1,5 @@
 
 #%%
-
 from rouge_score import rouge_scorer
 from bert_score import score as bert_scorer
 import pandas as pd
@@ -53,21 +52,36 @@ def semantic_clustering(df_ext,rouge,threshold =0.9):
     return df, grouped_df
 
 #%%
-captions_path = '/home/guidorocchietti/image_captioning/data/frankfurt/cleaned_captions_frankfurt.csv'
+captions_path = '../data/frankfurt/cleaned_captions_frankfurt.csv'
 captions = pd.read_csv(captions_path)
 grouped = captions.groupby('cluster').agg({'caption': '. '.join}).reset_index()
 ### eliminate outliers ###
 grouped = grouped[grouped.cluster != -1]
+### compute similarity matrix ###
+def compute_sim_matrix(df, similarity_func='rouge1'):
 
-rouge = pd.DataFrame(index=grouped.cluster, columns=grouped.cluster)
-scorer = rouge_scorer.RougeScorer(['rouge1'], use_stemmer=True)
-for i in range(len(rouge)):
-    for j in range(len(rouge)):
-            rouge.iloc[i, j] = scorer.score(grouped.iloc[i].caption,grouped.iloc[j].caption)['rouge1'].precision
+    if similarity_func in ['rouge1', 'rougeL', 'bleu']:
+        scorer = rouge_scorer.RougeScorer([similarity_func], use_stemmer=True)
+    elif similarity_func == 'bert':
+        scorer = bert_scorer
+    else:
+        raise ValueError('Invalid similarity function')
+    
+    similarity_matrix = pd.DataFrame(index=df['cluster'], columns=df['cluster'])
+    for i in range(len(similarity_matrix)):
+        for j in range(len(similarity_matrix)):
+            similarity_matrix.iloc[i, j] = scorer.score(grouped.iloc[i].caption,grouped.iloc[j].caption)['rouge1'].precision
+    return similarity_matrix
 
+# rouge = pd.DataFrame(index=grouped.cluster, columns=grouped.cluster)
+# 
+# for i in range(len(rouge)):
+#     for j in range(len(rouge)):
+#             rouge.iloc[i, j] = scorer.score(grouped.iloc[i].caption,grouped.iloc[j].caption)['rouge1'].precision
 
+rouge = compute_sim_matrix(grouped, lambda x,y: sentence_bleu([x.split()],y.split()))
 df_clustered_09, grouped_df_09 = semantic_clustering(grouped,rouge, 0.9)
-grouped_df_09.to_csv('/home/guidorocchietti/image_captioning/data/frankfurt/semantic_clusters_09.csv')
+grouped_df_09.to_csv('../data/frankfurt/semantic_clusters_09.csv')
 
 
 
@@ -78,12 +92,12 @@ grouped_df_09.to_csv('/home/guidorocchietti/image_captioning/data/frankfurt/sema
 for i in range(70,95,5):
     h= float(i/100)
     bleah, bleah_grouped = semantic_clustering(df,rouge, h)
-    bleah.to_csv(f'/home/guidorocchietti/image_captioning/data/src/clustered_df_{str(i)}.csv')
-    bleah_grouped.to_csv(f'/home/guidorocchietti/image_captioning/data/src/grouped_df_{str(i)}.csv')
+    bleah.to_csv(f'../data/src/clustered_df_{str(i)}.csv')
+    bleah_grouped.to_csv(f'../data/src/grouped_df_{str(i)}.csv')
     
 #%%
 import re
-with open('/home/guidorocchietti/image_captioning/pisa_clustered_df_with_caption.html', 'r') as file:
+with open('../pisa_clustered_df_with_caption.html', 'r') as file:
     html = ''.join(file.readlines())
 
 table_html = re.sub(r'</?div[^>]*>', '', html)
@@ -99,12 +113,12 @@ df_html = df_html.merge(clusters, on='id', how='inner',suffixes=('_old',''))
 df_html = df_html.merge(df_09, on='id', how='inner',suffixes=('','_semantic'))
 df_html = df_html.drop(columns=['caption', 'cluster_old'])
 df_html['link'] = df_html.link.apply(gen_link)
-df_html.to_html('/home/guidorocchietti/image_captioning/pisa_clustered_df_with_captions_new.html', escape=False)
+df_html.to_html('../pisa_clustered_df_with_captions_new.html', escape=False)
 
 #%%
 
-if os.path.exists('/home/guidorocchietti/image_captioning/rouge_cooccurence_precision.csv'):\
-    rouge = pd.read_csv('/home/guidorocchietti/image_captioning/rouge_cooccurence_precision.csv', index_col=0)  
+if os.path.exists('../rouge_cooccurence_precision.csv'):\
+    rouge = pd.read_csv('../rouge_cooccurence_precision.csv', index_col=0)  
 else:
     rouge = pd.DataFrame(index=captions['caption'], columns=captions['caption'])
     scorer = rouge_scorer.RougeScorer(['rouge1'], use_stemmer=True)

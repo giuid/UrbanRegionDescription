@@ -1,8 +1,8 @@
 #%%
 import os
-os.environ['HF_HOME'] = '/home/guidorocchietti/llms/data/cache/'
+os.environ['HF_HOME'] = '../llms/data/cache/'
 os.environ["CUDA_VISIBLE_DEVICES"]="0,1,4,5"
-print('Using /home/guidorocchietti/llms/data/cache')
+print('Using ../llms/data/cache')
 import pandas as pd
 import torch
 import transformers
@@ -105,11 +105,11 @@ def generate_summaries(model,prompts,captions,clusters,tokenizer,manual_captions
 
 
 models = ['upstage/SOLAR-10.7B-Instruct-v1.0','meta-llama/Llama-2-13b-chat-hf','meta-llama/Llama-2-7b-chat-hf']
-clusters_path ='/home/guidorocchietti/image_captioning/data/frankfurt/semantic_clusters_09.csv'
-manual_captions_path = '/home/guidorocchietti/image_captioning/data/manual_captions.csv'
-prompts_path = '/home/guidorocchietti/image_captioning/data/prompts.csv'
-output_path = '/home/guidorocchietti/image_captioning/data/frankfurt/summaries/'
-#clusters_path = '/home/guidorocchietti/image_captioning/data/pisa/clusters/grouped_df_90.csv'
+clusters_path ='../data/frankfurt/semantic_clusters_09.csv'
+manual_captions_path = '../data/manual_captions.csv'
+prompts_path = '../data/prompts.csv'
+output_path = '../data/frankfurt/summaries/'
+#clusters_path = '../data/pisa/clusters/grouped_df_90.csv'
 
 concatenated_captions = pd.read_csv(clusters_path)
 manual_captions = pd.read_csv(manual_captions_path)
