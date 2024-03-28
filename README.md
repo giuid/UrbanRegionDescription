@@ -10,8 +10,8 @@ pip install -r requirements.txt
 ## Usage
 To use the Urban Region Description project, follow these steps:
 
-1. Configure all parameters you want into the `config.json` file.
-2. Place your image dataset into the `data` folder.
+1. Configure all parameters you want into the `data/config.json` file.
+2. Place your image dataset into the `data/{city}/photos/` folder.
 3. Run
 ```
 python main.py
@@ -24,9 +24,9 @@ Let's say we have 3 images from a cluster in Pisa. After processing these images
 
 #### Cluster:
 <p float="left">
-  <img src="pisa/images/cluster_25/example1.png" width="30%" />
-  <img src="pisa/images/cluster_25/example4.png" width="28%" /> 
-  <img src="pisa/images/cluster_25/example3.png" width="32%" />
+  <img src="data/pisa/images/cluster_25/example1.png" width="30%" />
+  <img src="data/pisa/images/cluster_25/example4.png" width="28%" /> 
+  <img src="data/pisa/images/cluster_25/example3.png" width="32%" />
 </p>
 
 #### Generated textual description:
