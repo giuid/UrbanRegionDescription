@@ -52,13 +52,15 @@ def semantic_clustering(df_ext,rouge,threshold =0.9):
     return df, grouped_df
 
 #%%
+'''
 captions_path = '../data/frankfurt/cleaned_captions_frankfurt.csv'
 captions = pd.read_csv(captions_path)
 grouped = captions.groupby('cluster').agg({'caption': '. '.join}).reset_index()
 ### eliminate outliers ###
 grouped = grouped[grouped.cluster != -1]
 ### compute similarity matrix ###
-def compute_sim_matrix(df, similarity_func='rouge1'):
+'''
+def compute_sim_matrix_old(df, similarity_func='rouge1'):
 
     if similarity_func in ['rouge1', 'rougeL', 'bleu']:
         scorer = rouge_scorer.RougeScorer([similarity_func], use_stemmer=True)
@@ -73,16 +75,31 @@ def compute_sim_matrix(df, similarity_func='rouge1'):
             similarity_matrix.iloc[i, j] = scorer.score(grouped.iloc[i].caption,grouped.iloc[j].caption)['rouge1'].precision
     return similarity_matrix
 
+def compute_sim_matrix(df, similarity_func='rouge1'):
+
+    if similarity_func in ['rouge1', 'rougeL', 'bleu']:
+        scorer = rouge_scorer.RougeScorer([similarity_func], use_stemmer=True)
+    elif similarity_func == 'bert':
+        scorer = bert_scorer
+    else:
+        raise ValueError('Invalid similarity function')
+    
+    similarity_matrix = pd.DataFrame(index=df['cluster'], columns=df['cluster'])
+    for i in range(len(similarity_matrix)):
+        for j in range(len(similarity_matrix)):
+            similarity_matrix.iloc[i, j] = scorer.score(df.iloc[i].caption,df.iloc[j].caption)['rouge1'].precision
+    return similarity_matrix
+
 # rouge = pd.DataFrame(index=grouped.cluster, columns=grouped.cluster)
 # 
 # for i in range(len(rouge)):
 #     for j in range(len(rouge)):
 #             rouge.iloc[i, j] = scorer.score(grouped.iloc[i].caption,grouped.iloc[j].caption)['rouge1'].precision
-
+'''
 rouge = compute_sim_matrix(grouped, lambda x,y: sentence_bleu([x.split()],y.split()))
 df_clustered_09, grouped_df_09 = semantic_clustering(grouped,rouge, 0.9)
 grouped_df_09.to_csv('../data/frankfurt/semantic_clusters_09.csv')
-
+'''
 
 
 

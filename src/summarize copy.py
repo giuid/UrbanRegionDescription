@@ -103,7 +103,7 @@ def generate_summaries(model,prompts,captions,clusters,tokenizer,manual_captions
                 continue
     return data
 
-"""
+
 models = ['upstage/SOLAR-10.7B-Instruct-v1.0','meta-llama/Llama-2-13b-chat-hf','meta-llama/Llama-2-7b-chat-hf']
 clusters_path ='../data/frankfurt/semantic_clusters_09.csv'
 manual_captions_path = '../data/manual_captions.csv'
@@ -155,4 +155,3 @@ for model_id in models:
     df_few_shots.to_excel(f'{output_path}few_shots_{name}.xlsx',index=False)
     del model
     torch.cuda.empty_cache()
-    """

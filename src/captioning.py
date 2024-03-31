@@ -3,12 +3,21 @@ import os
 
 import torch
 import requests
-os.environ["CUDA_VISIBLE_DEVICES"]="0,1,5,4"
+#os.environ["CUDA_VISIBLE_DEVICES"]="0,1,5,4"
 
 from PIL import Image
 from transformers import Blip2Processor, Blip2ForConditionalGeneration
 import pandas as pd
 from tqdm import tqdm
+import spacy
+#NER = spacy.load("en_core_web_sm")
+try: 
+    NER = spacy.load("en_core_web_trf")
+except:
+    ## Download the model if it is not found. To download the model, run the following command in the terminal
+    os.system('python -m spacy download en_core_web_trf')
+    NER = spacy.load("en_core_web_trf")
+
 def download_photos(df, output_folder = './photo/pisa_clustered/',id_column = 'ID', link_column = 'link'):
     output_df = pd.DataFrame()
     if output_folder[-1] != '/':
@@ -27,9 +36,7 @@ def download_photos(df, output_folder = './photo/pisa_clustered/',id_column = 'I
                 raw_image = None
 
 
-import spacy
-#NER = spacy.load("en_core_web_sm")
-NER = spacy.load("en_core_web_trf")
+
 
 def sub_places_with_address(caption_text_list, address):
     cleaned_captions = []
@@ -149,6 +156,7 @@ def execute_captioning_old(data_file, output_file='pisa_clustered_df_with_captio
     else:
         if os.path.isfile(output_file):
             print(f"File {output_file} already exists")
+            
 def execute_captioning(df,output_file,photos_path):
     processor = Blip2Processor.from_pretrained("Salesforce/blip2-opt-2.7b")
     model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b", device_map="cuda")
@@ -213,6 +221,7 @@ def clean_captions_new(df):
     captions_df = pd.DataFrame({'id':IDs, 'caption':cleaned_captions})
     return captions_df
 #%%
+'''
 import pandas as pd
 
 do_captioning = False
@@ -221,17 +230,9 @@ if do_captioning:
     frankfurt = pd.read_csv('../data/frankfurt/frankfurt.csv', index_col=0)
 
     df_with_captions = execute_captioning(frankfurt, '../data/frankfurt/frankfurt_with_captions.html', photos_path='../data/frankfurt/photos')
-df_with_captions = pd.read_html('../data/frankfurt/frankfurt_with_captions.html', index_col=0)[0]
-cleaned_captions = clean_captions_new(df_with_captions)
-cleaned_captions = cleaned_captions.rename(columns={'id':'ID'})
-noisy_clusters = pd.read_csv('../data/frankfurt/clustered_frankfurt_noisy.csv')
-cleaned_captions.merge(noisy_clusters[['ID','cluster']], on='ID')
-
-#download_photos(frankfurt, '../data/frankfurt/photos/')
-#captions_df['caption'] = captions_df.caption.apply(lambda x: " . ".join(x))
-#captions_df.to_csv('concatenated_captions.csv', index =False)
-
-
-# %% Summarization Phase
-
-# %%
+    df_with_captions = pd.read_html('../data/frankfurt/frankfurt_with_captions.html', index_col=0)[0]
+    cleaned_captions = clean_captions_new(df_with_captions)
+    cleaned_captions = cleaned_captions.rename(columns={'id':'ID'})
+    noisy_clusters = pd.read_csv('../data/frankfurt/clustered_frankfurt_noisy.csv')
+    cleaned_captions.merge(noisy_clusters[['ID','cluster']], on='ID')
+'''
