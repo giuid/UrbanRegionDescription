@@ -177,7 +177,8 @@ def evaluate_df(df, manual_df, name:str):#,type:str):
     score.columns = [x+'_'+name if x not in ['cluster'] else x for x in score.columns]
     #scores = scores.merge(score, on='cluster', how='inner')
     return score
-
+'''
+USAGE EXAMPLE
 cluster_manual = pd.read_csv('../data/pisa/clusters/new_manual_captions.csv', sep =';')
 sumaries_path = '../data/pisa/summaries/'
 files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
@@ -190,76 +191,4 @@ for file in tqdm(files[:], desc='Evaluating files',position=0):
     evaluation = evaluate_df(df, cluster_manual, file)
     evaluation.to_csv(f'../data/pisa/scores/four_sents_{file}', index = False)
     scores[file] = evaluation
-    
-
-
-    #%%
-
-#%%
-'''
-cluster_manual = pd.read_csv('../data/pisa/clusters/clusters_manual.tsv', sep='\t')
-do_scores = True
-if do_scores:
-    sumaries_path = '../data/pisa/summaries/'
-    files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
-    summaries = {}
-    for file in files:
-        df = pd.read_csv(os.path.join(sumaries_path, file))
-        df['cleaned'] = clean_output(df.decoded.tolist(),df.caption.tolist())
-        summaries[file] = df
-    
-    scores = {'zero_shot': None, 'one_shot': None, 'few_shot': None}
-    for key in summaries:
-        df= summaries[key]
-        data = df.merge(cluster_manual, on='cluster', how='inner')
-        score = calculate_scores(data,'summary', 'cleaned')
-        score.columns = [x+'_'+key if x not in ['cluster'] else x for x in score.columns]
-        name = 'zero_shot' if 'zero' in key else 'one_shot' if 'one' in key else 'few_shot'
-        if scores[name] is None:
-            scores[name] = score
-        else:
-            scores[name] = scores[name].merge(score, on='cluster', how='inner')
-else:
-    sumaries_path = '../data/pisa/scores'
-    files = [x for x in  os.listdir(sumaries_path)  if '.csv' in x ]
-    summaries = {}
-    for file in files:
-        df = pd.read_csv(os.path.join(sumaries_path, file))
-        df['cleaned'] = clean_output(df.decoded.tolist(),df.caption.tolist())
-        summaries[file] = df
-
-    scores = {'zero_shot': None, 'one_shot': None, 'few_shot': None}
-    for key in summaries:
-        df = summaries[key]
-        data = df.merge(cluster_manual, on='cluster', how='inner',)
-        data.columns = [x+'_'+key if x not in ['cluster'] else x for x in data.columns]
-        name = 'zero_shot' if 'zero' in key else 'one_shot' if 'one' in key else 'few_shot'
-        if scores[name] is None:
-            scores[name] = data
-        else:
-            scores[name] = scores[name].merge(data, on='cluster', how='inner')
-for key in scores:
-    scores[key].to_csv(f'../data/pisa/scores/{key}_scores.csv', index = False)
-#%%
-save_path = '../data/pisa/plots'
-evaluations = ['rouge1','rougeL','bert']
-metrics = ['precision', 'recall', 'fmeasure']
-
-
-#%%
-evaluations = ['rouge1_precision', 'rouge1_recall', 'rouge1_fmeasure', 'rougeL_precision', 'rougeL_recall', 'rougeL_fmeasure', 'bert_precision', 'bert_recall', 'bert_f1']
-for evaluation in evaluations:
-    for method in scores:
-        means = []
-        bar_labels = []
-        for key in [x for x in  scores[method].columns if evaluation in x]:
-            means.append(scores[method][key].mean())
-
-            name= key.replace('few_shots','').replace('one_shot','').replace('zero_shot','').replace('.csv','').replace(evaluation+'_','').replace('scores','').replace('_',' ')
-            bar_labels.append(name)
-        new_save_path = os.path.join(save_path,f'{method}_{evaluation}.png') if save_path is not None else None
-        print (method)
-
-        plot_bar_mean(means,bar_labels,title = f'{evaluation}',ylabel = f'{evaluation}', save_path = new_save_path)
-    
 '''
