@@ -5,5 +5,9 @@
     "threshold": 0.9,
     "models": ["upstage/SOLAR-10.7B-Instruct-v1.0","meta-llama/Llama-2-13b-chat-hf","meta-llama/Llama-2-7b-chat-hf"],
     "n_shots": 3,
-    "output_path": "data/pisa/outputs/"
+    "data_path": "/Users/guido/Documents/Programming/UrbanRegionDescription/data/frankfurt/frankfurt.csv",
+    "output_path": "/Users/guido/Documents/Programming/UrbanRegionDescription/data/pisa",
+    "prompts_path" : "data/pisa/input_data/prompts.csv",
+    "manual_captions_path": "data/pisa/input_data/manual_captions.csv",
+    "summarization_mode" : "few_shot"
 }
