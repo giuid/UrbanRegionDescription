@@ -11,7 +11,7 @@ from huggingface_hub import login
 from tqdm import tqdm
 import pandas as pd
 
-hf_token = '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'
+hf_token = 'INSERT_HUGGINGFACE_TOKEN'
 login(token=hf_token)
 def generate_chat(prompt,caption :str, examples : list =None, mode = 'zero_shot', n_shots = 3):
     assert mode in ['zero_shot','one_shot','few_shots'], 'mode must be one of zero_shot, one_shot, few_shots'
@@ -103,56 +103,3 @@ def generate_summaries(model,prompts,captions,clusters,tokenizer,manual_captions
                 continue
     return data
 
-"""
-models = ['upstage/SOLAR-10.7B-Instruct-v1.0','meta-llama/Llama-2-13b-chat-hf','meta-llama/Llama-2-7b-chat-hf']
-clusters_path ='../data/frankfurt/semantic_clusters_09.csv'
-manual_captions_path = '../data/manual_captions.csv'
-prompts_path = '../data/prompts.csv'
-output_path = '../data/frankfurt/summaries/'
-#clusters_path = '../data/pisa/clusters/grouped_df_90.csv'
-
-concatenated_captions = pd.read_csv(clusters_path)
-manual_captions = pd.read_csv(manual_captions_path)
-prompts = pd.read_csv(prompts_path)
-#concatenated_captions = pd.read_csv('./new_concatenated_captions.csv')
-
-
-#%%
-usebnb = False
-for model_id in models:
-    if model_id == 'upstage/SOLAR-10.7B-Instruct-v1.0':
-        name = 'SOLAR-10.7B'
-    elif model_id == 'meta-llama/Llama-2-13b-chat-hf':
-        name = 'Llama-13B'
-    elif model_id == 'meta-llama/Llama-2-7b-chat-hf':
-        name = 'Llama-7B'
-    print(f'Running {name}')
-    model = transformers.AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, device_map='auto')
-    tokenizer = transformers.AutoTokenizer.from_pretrained(model_id)
-
-    n_shots = 3
-    #%%
-    prompts_list = prompts.prompt.tolist()
-    captions_list = concatenated_captions.caption.tolist()
-    clusters_list = concatenated_captions.cluster.tolist()
-    print('Generating summaries for one_shot')
-    print('saving to ',f'{output_path}one_shot_{name}.csv')
-    data_one_shot = generate_summaries(model, prompts_list,captions_list,clusters_list,tokenizer,manual_captions,mode='one_shot')
-    df_one_shot = pd.DataFrame(data_one_shot)
-    df_one_shot.to_csv(f'{output_path}one_shot_{name}.csv',index=False)
-    df_one_shot.to_excel(f'{output_path}one_shot_{name}.xlsx',index=False)
-    print('Generating summaries for zero_shot')
-    print('saving to ',f'{output_path}zero_shot_{name}.csv')
-    data_zero_shot = generate_summaries(model, prompts_list,captions_list,clusters_list,tokenizer,manual_captions,mode='zero_shot')
-    df_zero_shot = pd.DataFrame(data_zero_shot)
-    df_zero_shot.to_csv(f'{output_path}zero_shot_{name}.csv',index=False)
-    df_zero_shot.to_excel(f'{output_path}zero_shot_{name}.xlsx',index=False)
-    print('Generating summaries for few_shots')
-    print('saving to ',f'{output_path}few_shots_{name}.csv')
-    data_few_shots = generate_summaries(model, prompts_list,captions_list,clusters_list,tokenizer,manual_captions,mode='few_shots',n_shots=n_shots)
-    df_few_shots = pd.DataFrame(data_few_shots)
-    df_few_shots.to_csv(f'{output_path}few_shots_{name}.csv',index=False)
-    df_few_shots.to_excel(f'{output_path}few_shots_{name}.xlsx',index=False)
-    del model
-    torch.cuda.empty_cache()
-    """
