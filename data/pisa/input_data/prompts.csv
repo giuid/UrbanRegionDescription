@@ -1,0 +1,6 @@
+prompt
+"I will provide you with many descriptions of photos separated by dots. The photos were all taken in same area. I want you to generate a coherent text, not a list, to describe the place given the descriptions."
+"You will get descriptions of photos separated by dots. The photos were all taken in same area. I want you to generate a text, not a list, describing the place."
+"Given many short description generate a coherent text about a certain area."
+"Given many short description generate a short coherent text about a certain area."
+"Provide a short summary given the descriptions."
