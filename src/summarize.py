@@ -1,8 +1,11 @@
 #%%
 import os
-os.environ['HF_HOME'] = '../llms/data/cache/'
-os.environ["CUDA_VISIBLE_DEVICES"]="0,1,4,5"
-print('Using ../llms/data/cache')
+### UNCOMMENT IF YOU WANT TO POINT TO A CUSTOM HUGGINGFACE CACHE FOLDER ###
+#os.environ['HF_HOME'] = '../llms/data/cache/'
+
+### UNCOMMENT IF YOU WANT TO SELECT THE GPUs TO USE WHILE SUMMARIZING ###
+#os.environ["CUDA_VISIBLE_DEVICES"]="0,1,4,5"
+
 import pandas as pd
 import torch
 import transformers
